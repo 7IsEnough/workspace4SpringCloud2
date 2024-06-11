@@ -11,3 +11,9 @@ logging:
     dateformat: HH:mm:ss
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
+mybatis-plus:
+  type-aliases-package: com.clearlove.domain
+  mapper-locations: classpath*:mapper/*.xml
+  global-config:
+    db-config:
+      id-type: assign_uuid
