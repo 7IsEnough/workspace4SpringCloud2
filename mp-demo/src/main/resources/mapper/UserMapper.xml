@@ -30,6 +30,9 @@
         </set>
         WHERE `id`=#{id};
     </update>
+    <update id="updateBalanceByIds">
+        update user set balance = balance - #{amount} ${ew.customSqlSegment}
+    </update>
     <delete id="deleteUser" parameterType="com.clearlove.domain.User">
         DELETE FROM user WHERE id = #{id}
     </delete>
