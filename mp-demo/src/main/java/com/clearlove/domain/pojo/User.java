@@ -1,4 +1,4 @@
-package com.clearlove.domain;
+package com.clearlove.domain.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -15,7 +15,7 @@ public class User {
     /**
      * 用户id
      */
-    @TableId(type = IdType.AUTO)
+//    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

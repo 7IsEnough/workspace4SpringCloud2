@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.clearlove.mapper.UserMapper">
-    <insert id="saveUser" parameterType="com.clearlove.domain.User">
+    <insert id="saveUser" parameterType="com.clearlove.domain.pojo.User">
         INSERT INTO `user` (`id`, `username`, `password`, `phone`, `info`, `balance`)
         VALUES
         (#{id}, #{username}, #{password}, #{phone}, #{info}, #{balance});
     </insert>
-    <update id="updateUser" parameterType="com.clearlove.domain.User">
+    <update id="updateUser" parameterType="com.clearlove.domain.pojo.User">
         UPDATE `user`
         <set>
             <if test="username != null">
@@ -33,17 +33,17 @@
     <update id="updateBalanceByIds">
         update user set balance = balance - #{amount} ${ew.customSqlSegment}
     </update>
-    <delete id="deleteUser" parameterType="com.clearlove.domain.User">
+    <delete id="deleteUser" parameterType="com.clearlove.domain.pojo.User">
         DELETE FROM user WHERE id = #{id}
     </delete>
 
-    <select id="queryUserById" resultType="com.clearlove.domain.User">
+    <select id="queryUserById" resultType="com.clearlove.domain.pojo.User">
         SELECT *
         FROM user
         WHERE id = #{id}
     </select>
 
-    <select id="queryUserByIds" resultType="com.clearlove.domain.User">
+    <select id="queryUserByIds" resultType="com.clearlove.domain.pojo.User">
         SELECT *
         FROM user
         <if test="ids != null">
