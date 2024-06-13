@@ -11,7 +11,6 @@ import com.clearlove.domain.vo.UserVO;
 import com.clearlove.mapper.UserMapper;
 import com.clearlove.service.IUserService;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -85,12 +84,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
     List<Long> userIds = users.stream().map(User::getId).collect(Collectors.toList());
 
-
     List<Address> addresses1 = Db.lambdaQuery(Address.class).in(Address::getUserId, userIds).list();
     if (CollectionUtils.isEmpty(addresses1)) {
       return BeanUtil.copyToList(users, UserVO.class);
     }
-    Map<Long, List<Address>> user2Address = addresses1.stream().collect(Collectors.groupingBy(Address::getUserId));
+    Map<Long, List<Address>> user2Address =
+        addresses1.stream().collect(Collectors.groupingBy(Address::getUserId));
     return users.stream()
         .map(
             user -> {
