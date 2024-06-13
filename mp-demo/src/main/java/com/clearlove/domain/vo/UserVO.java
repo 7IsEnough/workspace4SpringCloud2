@@ -2,6 +2,7 @@ package com.clearlove.domain.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -22,4 +23,7 @@ public class UserVO {
 
     @ApiModelProperty("账户余额")
     private Integer balance;
+
+    @ApiModelProperty("用户收货地址")
+    private List<AddressVO> addresses;
 }

@@ -1,14 +1,20 @@
 package com.clearlove.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.clearlove.domain.pojo.Address;
 import com.clearlove.domain.pojo.User;
+import com.clearlove.domain.vo.AddressVO;
+import com.clearlove.domain.vo.UserVO;
 import com.clearlove.mapper.UserMapper;
 import com.clearlove.service.IUserService;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author promise
@@ -51,5 +57,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         .ge(Objects.nonNull(minBalance), User::getBalance, minBalance)
         .le(Objects.nonNull(maxBalance), User::getBalance, maxBalance)
         .list();
+  }
+
+  @Override
+  public UserVO queryUserAndAddressById(Long id) {
+    User user = getById(id);
+    if (Objects.isNull(user) || user.getStatus() == 2) {
+      throw new RuntimeException("用户状态异常");
+    }
+    List<Address> addresses = Db.lambdaQuery(Address.class).eq(Address::getUserId, id).list();
+    UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
+    if (!CollectionUtils.isEmpty(addresses)) {
+      userVO.setAddresses(BeanUtil.copyToList(addresses, AddressVO.class));
+    }
+    return userVO;
   }
 }

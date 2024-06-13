@@ -49,8 +49,7 @@ public class UserController {
   @ApiOperation("根据id查询用户接口")
   @GetMapping("/{id}")
   public UserVO queryUserById(@ApiParam("用户id") @PathVariable("id") Long id) {
-    User user = userService.getById(id);
-    return BeanUtil.copyProperties(user, UserVO.class);
+    return userService.queryUserAndAddressById(id);
   }
 
   @ApiOperation("根据id批量查询用户接口")
