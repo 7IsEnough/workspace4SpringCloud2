@@ -10,8 +10,12 @@ import com.clearlove.domain.vo.AddressVO;
 import com.clearlove.domain.vo.UserVO;
 import com.clearlove.mapper.UserMapper;
 import com.clearlove.service.IUserService;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -71,5 +75,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
       userVO.setAddresses(BeanUtil.copyToList(addresses, AddressVO.class));
     }
     return userVO;
+  }
+
+  @Override
+  public List<UserVO> queryUserAndAddressByIds(List<Long> ids) {
+    List<User> users = listByIds(ids);
+    if (CollectionUtils.isEmpty(users)) {
+      return Collections.emptyList();
+    }
+    List<Long> userIds = users.stream().map(User::getId).collect(Collectors.toList());
+
+
+    List<Address> addresses1 = Db.lambdaQuery(Address.class).in(Address::getUserId, userIds).list();
+    if (CollectionUtils.isEmpty(addresses1)) {
+      return BeanUtil.copyToList(users, UserVO.class);
+    }
+    Map<Long, List<Address>> user2Address = addresses1.stream().collect(Collectors.groupingBy(Address::getUserId));
+    return users.stream()
+        .map(
+            user -> {
+              UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
+              List<Address> addresses = user2Address.get(user.getId());
+              if (!CollectionUtils.isEmpty(addresses)) {
+                userVO.setAddresses(BeanUtil.copyToList(addresses, AddressVO.class));
+              }
+              return userVO;
+            })
+        .collect(Collectors.toList());
   }
 }
