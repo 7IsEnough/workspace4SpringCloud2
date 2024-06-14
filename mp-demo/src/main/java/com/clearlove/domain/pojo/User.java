@@ -1,12 +1,10 @@
 package com.clearlove.domain.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-
+import com.clearlove.enums.UserStatus;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 @TableName("user")
@@ -39,10 +37,8 @@ public class User {
      */
     private String info;
 
-    /**
-     * 使用状态（1正常 2冻结）
-     */
-    private Integer status;
+  /** 使用状态（1正常 2冻结） */
+  private UserStatus status;
 
     /**
      * 账户余额

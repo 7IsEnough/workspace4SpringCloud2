@@ -8,6 +8,7 @@ import com.clearlove.domain.pojo.Address;
 import com.clearlove.domain.pojo.User;
 import com.clearlove.domain.vo.AddressVO;
 import com.clearlove.domain.vo.UserVO;
+import com.clearlove.enums.UserStatus;
 import com.clearlove.mapper.UserMapper;
 import com.clearlove.service.IUserService;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
   public void deductBalance(Long id, Integer money) {
     User user = getById(id);
 
-    if (Objects.isNull(user) || user.getStatus() == 2) {
+    if (Objects.isNull(user) || user.getStatus() == UserStatus.FROZEN) {
       throw new RuntimeException("用户状态异常");
     }
 
@@ -43,7 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     lambdaUpdate()
         .set(User::getBalance, remainBalance)
-        .set(remainBalance == 0, User::getStatus, 2)
+        .set(remainBalance == 0, User::getStatus, UserStatus.FROZEN)
         .eq(User::getId, id)
         // 乐观锁
         .eq(User::getBalance, user.getBalance())
@@ -65,7 +66,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
   @Override
   public UserVO queryUserAndAddressById(Long id) {
     User user = getById(id);
-    if (Objects.isNull(user) || user.getStatus() == 2) {
+    if (Objects.isNull(user) || user.getStatus() == UserStatus.FROZEN) {
       throw new RuntimeException("用户状态异常");
     }
     List<Address> addresses = Db.lambdaQuery(Address.class).eq(Address::getUserId, id).list();

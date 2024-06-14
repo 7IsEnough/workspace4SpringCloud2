@@ -1,5 +1,6 @@
 package com.clearlove.domain.vo;
 
+import com.clearlove.enums.UserStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
@@ -18,8 +19,8 @@ public class UserVO {
     @ApiModelProperty("详细信息")
     private String info;
 
-    @ApiModelProperty("使用状态（1正常 2冻结）")
-    private Integer status;
+  @ApiModelProperty("使用状态（1正常 2冻结）")
+  private UserStatus status;
 
     @ApiModelProperty("账户余额")
     private Integer balance;
