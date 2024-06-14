@@ -4,14 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.clearlove.domain.pojo.User;
+import com.clearlove.domain.pojo.UserInfo;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @SpringBootTest
 class UserMapperTest {
@@ -26,7 +26,7 @@ class UserMapperTest {
     user.setPassword("123");
     user.setPhone("18688990011");
     user.setBalance(200);
-    user.setInfo("{\"age\": 24, \"intro\": \"英文老师\", \"gender\": \"female\"}");
+    user.setInfo(UserInfo.of(24, "英文老师", "female"));
     user.setCreateTime(LocalDateTime.now());
     user.setUpdateTime(LocalDateTime.now());
     userMapper.insert(user);

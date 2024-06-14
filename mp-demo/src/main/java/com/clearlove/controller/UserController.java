@@ -1,6 +1,7 @@
 package com.clearlove.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.clearlove.domain.dto.PageDTO;
 import com.clearlove.domain.dto.UserFormDTO;
 import com.clearlove.domain.pojo.User;
 import com.clearlove.domain.query.UserQuery;
@@ -45,7 +46,6 @@ public class UserController {
     userService.removeById(id);
   }
 
-
   @ApiOperation("根据id查询用户接口")
   @GetMapping("/{id}")
   public UserVO queryUserById(@ApiParam("用户id") @PathVariable("id") Long id) {
@@ -62,15 +62,25 @@ public class UserController {
   @PutMapping("/{id}/deduction/{money}")
   public void deductBalance(
       @ApiParam("用户id") @PathVariable("id") Long id,
-      @ApiParam("扣减的金额") @PathVariable("money") Integer money
-      ) {
+      @ApiParam("扣减的金额") @PathVariable("money") Integer money) {
     userService.deductBalance(id, money);
   }
 
   @ApiOperation("根据复杂条件查询用户接口")
   @GetMapping("/list")
-  public List<UserVO> queryUsers(@ApiParam("用户id集合")UserQuery userQuery) {
-    List<User> users = userService.queryUsers(userQuery.getName(), userQuery.getStatus(), userQuery.getMinBalance(), userQuery.getMaxBalance());
+  public List<UserVO> queryUsers(@ApiParam("用户id集合") UserQuery userQuery) {
+    List<User> users =
+        userService.queryUsers(
+            userQuery.getName(),
+            userQuery.getStatus(),
+            userQuery.getMinBalance(),
+            userQuery.getMaxBalance());
     return BeanUtil.copyToList(users, UserVO.class);
+  }
+
+  @ApiOperation("根据条件分页查询用户接口")
+  @GetMapping("/pages")
+  public PageDTO<UserVO> queryUsersPage(@ApiParam("用户id集合") UserQuery userQuery) {
+    return userService.queryUsersPage(userQuery);
   }
 }

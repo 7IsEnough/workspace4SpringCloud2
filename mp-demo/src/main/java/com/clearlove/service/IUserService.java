@@ -1,7 +1,9 @@
 package com.clearlove.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.clearlove.domain.dto.PageDTO;
 import com.clearlove.domain.pojo.User;
+import com.clearlove.domain.query.UserQuery;
 import com.clearlove.domain.vo.UserVO;
 import java.util.List;
 
@@ -18,4 +20,6 @@ public interface IUserService extends IService<User> {
   UserVO queryUserAndAddressById(Long id);
 
   List<UserVO> queryUserAndAddressByIds(List<Long> ids);
+
+  PageDTO<UserVO> queryUsersPage(UserQuery userQuery);
 }

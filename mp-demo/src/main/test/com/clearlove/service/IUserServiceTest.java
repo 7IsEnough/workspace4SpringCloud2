@@ -1,6 +1,9 @@
 package com.clearlove.service;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.clearlove.domain.pojo.User;
+import com.clearlove.domain.pojo.UserInfo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +29,7 @@ public class IUserServiceTest {
     user.setPassword("123");
     user.setPhone("18688990011");
     user.setBalance(200);
-    user.setInfo("{\"age\": 24, \"intro\": \"英文老师\", \"gender\": \"female\"}");
+    user.setInfo(UserInfo.of(24, "英文老师", "female"));
     user.setCreateTime(LocalDateTime.now());
     user.setUpdateTime(LocalDateTime.now());
 
@@ -45,7 +48,7 @@ public class IUserServiceTest {
     user.setPassword("123");
     user.setPhone("" + (18688190000L + i));
     user.setBalance(2000);
-    user.setInfo("{\"age\":24,\"intro\":\"英文老师\",\"gender\":\"female\"}");
+    user.setInfo(UserInfo.of(24, "英文老师", "female"));
     user.setCreateTime(LocalDateTime.now());
     user.setUpdateTime(user.getCreateTime());
     return user;
@@ -79,5 +82,23 @@ public class IUserServiceTest {
     }
     long e = System.currentTimeMillis();
     System.out.println("耗时：" + (e - b));
+  }
+
+  @Test
+  void testPage() {
+    int pageNo = 1, pageSize = 2;
+    Page<User> page = Page.of(pageNo, pageSize);
+
+    page.addOrder(new OrderItem("balance", true));
+    page.addOrder(new OrderItem("id", true));
+
+    Page<User> userPage = userService.page(page);
+
+    long total = userPage.getTotal();
+    System.out.println("total = " + total);
+    long pages = userPage.getPages();
+    System.out.println("pages = " + pages);
+    List<User> records = userPage.getRecords();
+    records.forEach(System.out::println);
   }
 }

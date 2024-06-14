@@ -2,10 +2,13 @@ package com.clearlove.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.clearlove.domain.dto.PageDTO;
 import com.clearlove.domain.pojo.Address;
 import com.clearlove.domain.pojo.User;
+import com.clearlove.domain.query.UserQuery;
 import com.clearlove.domain.vo.AddressVO;
 import com.clearlove.domain.vo.UserVO;
 import com.clearlove.enums.UserStatus;
@@ -102,5 +105,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
               return userVO;
             })
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public PageDTO<UserVO> queryUsersPage(UserQuery userQuery) {
+    String name = userQuery.getName();
+    Integer status = userQuery.getStatus();
+
+    Page<User> page = userQuery.toMpPageDefaultSortByUpdateTime();
+
+    Page<User> p =
+        lambdaQuery()
+            .like(StringUtils.isNotBlank(name), User::getUsername, name)
+            .eq(Objects.nonNull(status), User::getStatus, status)
+            .page(page);
+
+    return PageDTO.of(
+        p,
+        (user -> {
+          UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
+          userVO.setUsername(
+              userVO.getUsername().substring(0, userVO.getUsername().length() - 2) + "**");
+          return userVO;
+        }));
   }
 }
