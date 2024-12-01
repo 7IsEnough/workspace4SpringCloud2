@@ -1,0 +1,12 @@
+logging:
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS
+
+
+spring:
+  rabbitmq:
+    host: 192.168.2.140
+    port: 5672
+    virtual-host: /hmall
+    username: hmall
+    password: 123
