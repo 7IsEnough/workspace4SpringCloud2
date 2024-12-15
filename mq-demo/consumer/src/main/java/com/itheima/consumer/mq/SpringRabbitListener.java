@@ -29,4 +29,14 @@ public class SpringRabbitListener {
     System.out.println("消费者2接收到消息：" + message + ", " + LocalTime.now());
     Thread.sleep(200);
   }
+
+  @RabbitListener(queues = "fanout.queue1")
+  public void listenFanoutQueue1(String message) {
+    log.info("消费者1监听到fanout.queue1的消息：{}", message);
+  }
+
+  @RabbitListener(queues = "fanout.queue2")
+  public void listenFanoutQueue2(String message) {
+    log.info("消费者2监听到fanout.queue2的消息：{}", message);
+  }
 }
