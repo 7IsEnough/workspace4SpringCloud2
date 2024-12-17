@@ -63,4 +63,19 @@ class SpringAmqpTest {
 
     rabbitTemplate.convertAndSend(exchangeName,null, message);
   }
+
+  @Test
+  public void testDirectQueue() {
+
+    // 交换机名
+    String exchangeName = "hmall.direct";
+
+    // String message = "红色";
+    // String message = "蓝色";
+    String message = "黄色";
+
+
+
+    rabbitTemplate.convertAndSend(exchangeName,"yellow", message);
+  }
 }
