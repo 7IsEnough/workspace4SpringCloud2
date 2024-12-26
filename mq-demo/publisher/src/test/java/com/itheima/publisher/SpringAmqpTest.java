@@ -78,4 +78,19 @@ class SpringAmqpTest {
 
     rabbitTemplate.convertAndSend(exchangeName,"yellow", message);
   }
+
+  @Test
+  public void testTopicQueue() {
+
+    // 交换机名
+    String exchangeName = "hmall.topic";
+
+    // String message = "红色";
+    // String message = "蓝色";
+    String message = "好冷";
+
+
+
+    rabbitTemplate.convertAndSend(exchangeName,"china.weather", message);
+  }
 }
