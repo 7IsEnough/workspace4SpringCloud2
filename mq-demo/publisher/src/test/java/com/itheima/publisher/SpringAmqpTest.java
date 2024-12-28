@@ -2,6 +2,8 @@ package com.itheima.publisher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
+import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +94,17 @@ class SpringAmqpTest {
 
 
     rabbitTemplate.convertAndSend(exchangeName,"china.weather", message);
+  }
+
+  @Test
+  public void testSendObject() {
+
+
+    Map<String, Object> msg = Maps.newHashMap("name", "Jack");
+    msg.put("age", 21);
+
+
+
+    rabbitTemplate.convertAndSend("object.queue", msg);
   }
 }

@@ -1,6 +1,7 @@
 package com.itheima.consumer.mq;
 
 import java.time.LocalTime;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -70,5 +71,10 @@ public class SpringRabbitListener {
   @RabbitListener(queues = "topic.queue2")
   public void listenTopicQueue2(String message) {
     log.info("消费者2监听到topic.queue2的消息：{}", message);
+  }
+
+  @RabbitListener(queues = "object.queue")
+  public void listenObjectQueue(Map<String, Object> message) {
+    log.info("消费者1监听到topic.queue1的消息：{}", message);
   }
 }
