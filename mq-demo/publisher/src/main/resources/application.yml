@@ -1,6 +1,8 @@
 logging:
   pattern:
-    dateformat: MM-dd HH:mm:ss:SSS
+    dateformat: yyyy-MM-dd HH:mm:ss:SSS
+  level:
+    com.itheima: debug
 
 
 spring:
@@ -10,3 +12,10 @@ spring:
     virtual-host: /hmall
     username: hmall
     password: 123
+    connection-timeout: 1s
+    template:
+      retry:
+        enabled: true
+        multiplier: 2
+    publisher-confirm-type: correlated
+    publisher-returns: true
