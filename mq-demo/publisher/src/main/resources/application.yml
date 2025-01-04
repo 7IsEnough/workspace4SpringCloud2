@@ -17,5 +17,5 @@ spring:
       retry:
         enabled: true
         multiplier: 2
-    publisher-confirm-type: correlated
-    publisher-returns: true
+    publisher-confirm-type: none
+    publisher-returns: false
