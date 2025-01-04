@@ -2,12 +2,16 @@ package com.itheima.publisher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Correlation;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.connection.CorrelationData.Confirm;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -149,5 +153,29 @@ class SpringAmqpTest {
     rabbitTemplate.convertAndSend(exchangeName,"yellow22", message, correlationData);
 
     Thread.sleep(2000);
+  }
+
+  @Test
+  public void testSendMessage() {
+    // 1. 自定义构建消息
+    Message message = MessageBuilder.withBody(
+        "Hello,Spring amqp".getBytes(StandardCharsets.UTF_8)).setDeliveryMode(MessageDeliveryMode.PERSISTENT).build();
+    // 2. 构建消息
+    for (int i = 0; i < 1000000; i++) {
+      rabbitTemplate.convertAndSend("simple.queue", message);
+    }
+
+  }
+
+  @Test
+  public void testSendLazyMessage() {
+    // 1. 自定义构建消息
+    Message message = MessageBuilder.withBody(
+        "Hello,Spring amqp".getBytes(StandardCharsets.UTF_8)).setDeliveryMode(MessageDeliveryMode.NON_PERSISTENT).build();
+    // 2. 构建消息
+    for (int i = 0; i < 1000000; i++) {
+      rabbitTemplate.convertAndSend("lazy.queue", message);
+    }
+
   }
 }

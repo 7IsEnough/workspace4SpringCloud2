@@ -8,6 +8,7 @@ import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.converter.MessageConversionException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,6 +22,7 @@ public class SpringRabbitListener {
   @RabbitListener(queues = "simple.queue")
   public void listenSimpleQueue(String message) {
     log.info("监听到simple.queue的消息：{}", message);
+    throw new MessageConversionException("我是故意的");
   }
 
   @RabbitListener(queues = "work.queue")
