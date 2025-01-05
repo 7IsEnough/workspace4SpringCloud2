@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -20,9 +21,10 @@ import org.springframework.stereotype.Component;
 public class SpringRabbitListener {
 
   @RabbitListener(queues = "simple.queue")
-  public void listenSimpleQueue(String message) {
-    log.info("监听到simple.queue的消息：{}", message);
-    throw new MessageConversionException("我是故意的");
+  public void listenSimpleQueue(Message message) {
+    log.info("监听到simple.queue的消息：id {}", message.getMessageProperties().getMessageId());
+    log.info("监听到simple.queue的消息：{}", new String(message.getBody()));
+    throw new RuntimeException("我是故意的");
   }
 
   @RabbitListener(queues = "work.queue")
@@ -78,5 +80,24 @@ public class SpringRabbitListener {
   @RabbitListener(queues = "object.queue")
   public void listenObjectQueue(Map<String, Object> message) {
     log.info("消费者1监听到topic.queue1的消息：{}", message);
+  }
+
+  @RabbitListener(bindings = @QueueBinding(
+      value = @Queue(name = "dlx.queue", durable = "true"),
+      exchange = @Exchange(name = "dlx.direct", type = ExchangeTypes.DIRECT),
+      key = {"hi"}
+  ))
+  public void listenDlxQueue(String message) {
+    log.info("消费者监听到dlx.queue的消息：{}", message);
+  }
+
+
+  @RabbitListener(bindings = @QueueBinding(
+      value = @Queue(name = "delay.queue", durable = "true"),
+      exchange = @Exchange(name = "delay.direct", delayed = "true"),
+      key = {"hi"}
+  ))
+  public void listenDelayQueue(String message) {
+    log.info("消费者监听到delay.queue的消息：{}", message);
   }
 }

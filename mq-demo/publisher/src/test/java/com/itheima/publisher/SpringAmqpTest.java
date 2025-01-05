@@ -8,10 +8,12 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Correlation;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.connection.CorrelationData.Confirm;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -176,6 +178,24 @@ class SpringAmqpTest {
     for (int i = 0; i < 1000000; i++) {
       rabbitTemplate.convertAndSend("lazy.queue", message);
     }
+
+  }
+
+  @Test
+  public void testSendDelayMessage() {
+    rabbitTemplate.convertAndSend("normal.direct","hi", "hello, delay", message -> {
+      message.getMessageProperties().setExpiration("10000");
+      return message;
+    });
+
+  }
+
+  @Test
+  public void testSendDelayMessageByPlugin() {
+    rabbitTemplate.convertAndSend("delay.direct","hi", "hello, delay2", message -> {
+      message.getMessageProperties().setDelay(10000);
+      return message;
+    });
 
   }
 }
