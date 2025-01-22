@@ -1,0 +1,419 @@
+POST /_analyze
+{
+  "analyzer": "ik_max_word",
+  "text": "传智播客开放大学，泰裤辣啊"
+}
+
+# 创建索引库并设置mapping映射
+PUT /heima
+{
+  "mappings": {
+    "properties": {
+      "info": {
+        "type": "text",
+        "analyzer": "ik_smart",
+        "index": true
+      },
+      "email":{
+        "type": "keyword",
+        "index": false
+      },
+      "name":{
+        "type": "object",
+        "properties": {
+          "firstName":{
+            "type":"keyword"
+          },
+          "lastName":{
+            "type":"keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+# 查询索引库
+GET /heima
+
+# 删除索引库
+DELETE /heima
+
+# 修改索引库
+PUT /heima/_mapping
+{
+  "properties":{
+    "age":{
+      "type":"byte"
+    }
+  }
+}
+
+# 新增文档
+POST /heima/_doc/1
+{
+  "info": "黑马程序员Java讲师",
+  "email": "zy@itcast.cn",
+  "name": {
+    "firstName": "云",
+    "lastName": "赵"
+  }
+}
+
+# 查询文档
+GET /heima/_doc/3
+
+
+# 删除文档
+DELETE /heima/_doc/1
+
+# 全量修改
+PUT /heima/_doc/2
+{
+  "info": "黑马程序员Python讲师",
+  "email": "zs@itcast.cn",
+  "name": {
+    "firstName": "四",
+    "lastName": "赵"
+  }
+}
+
+# 增量修改
+POST /heima/_update/1
+{
+  "doc": {
+    "email": "ZhaoYun@itcast.cn"
+  }
+}
+
+# 批量新增
+POST /_bulk
+{"index": {"_index":"heima", "_id": "3"}}
+{"info": "黑马程序员C++讲师", "email": "ww@itcast.cn", "name":{"firstName": "五", "lastName":"王"}}
+{"index": {"_index":"heima", "_id": "4"}}
+{"info": "黑马程序员前端讲师", "email": "zhangsan@itcast.cn", "name":{"firstName": "三", "lastName":"张"}}
+
+# 批量删除
+POST /_bulk
+{"delete": {"_index":"heima", "_id": 3}}
+{"delete": {"_index":"heima", "_id": 4}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+GET /items
+
+# 商品索引库
+PUT /hmall
+{
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text",
+        "analyzer": "ik_smart"
+      },
+      "price": {
+        "type": "integer"
+      },
+      "image":{
+        "type": "keyword",
+        "index": false
+      },
+      "category":{
+        "type": "keyword"
+      },
+      "brand":{
+        "type": "keyword"
+      },
+      "sold": {
+        "type": "integer"
+      },
+      "commentCount":{
+        "type": "integer",
+        "index": false
+      },
+      "isAD":{
+        "type": "boolean"
+      },
+      "updateTime":{
+        "type": "date"
+      }
+    },
+  }
+}
+
+GET /items/_doc/111
+
+# 查询所有
+GET /items/_search
+{
+  "query": {
+    "match_all": {
+
+    }
+  }
+}
+
+# match所有
+GET /items/_search
+{
+  "query": {
+    "match": {
+      "name": "脱脂牛奶"
+    }
+  }
+}
+
+
+# multi_match所有
+GET /items/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "脱脂牛奶",
+      "fields": ["name"]
+    }
+  }
+}
+
+
+# term所有
+GET /items/_search
+{
+  "query": {
+    "term": {
+      "brand": {
+        "value": "德亚"
+      }
+    }
+  }
+}
+
+
+# range所有
+GET /items/_search
+{
+  "query": {
+    "range": {
+      "price": {
+        "gte": 500000,
+        "lte": 1000000
+      }
+    }
+  }
+}
+
+# ids所有
+GET /items/_search
+{
+  "query": {
+    "ids": {
+      "values": ["123", "456"]
+    }
+  }
+}
+
+
+
+
+GET /items/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "name": "智能手机"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "brand": "华为"
+          }
+        },
+        {
+          "range": {
+            "price": {
+              "gte": 90000,
+              "lte": 159900
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+# 排序查询
+GET /items/_search
+{
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "sold": "desc"
+    },
+    {
+      "price": "asc"
+    }
+  ]
+}
+
+# 排序分页查询
+GET /items/_search
+{
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "sold": "desc"
+    },
+    {
+      "price": "asc"
+    }
+  ],
+  "from": 0,
+  "size": 10
+}
+
+# 高亮
+GET /items/_search
+{
+  "query": {
+    "match": {
+      "name": "脱脂牛奶"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "name": {
+        "pre_tags": "<em>",
+        "post_tags": "</em>"
+      }
+    }
+  }
+}
+
+# 聚合
+# select category,count(*) from items group by category
+GET /items/_search
+{
+  "size": 0,
+  "aggs": {
+    "cate_agg": {
+      "terms": {
+        "field": "category",
+        "size": 5
+      }
+    },
+    "brand_agg":{
+      "terms": {
+        "field": "brand",
+        "size": 10
+      }
+    }
+  }
+}
+
+# 带搜索条件的聚合
+GET /items/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "category": "手机"
+          }
+        },
+        {
+          "range": {
+            "price": {
+              "gte": 300000
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0,
+  "aggs": {
+    "brand_agg":{
+      "terms": {
+        "field": "brand",
+        "size": 10
+      }
+    }
+  }
+}
+
+
+# 带搜索条件的聚合
+GET /items/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "category": "手机"
+          }
+        }
+      ]
+    }
+  },
+  "size": 0,
+  "aggs": {
+    "brand_agg":{
+      "terms": {
+        "field": "brand",
+        "size": 10
+      },
+      "aggs": {
+        "price_stats": {
+          "stats": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
